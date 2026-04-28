@@ -1,5 +1,35 @@
 let currentSection = 'recognition';
 
+const STORAGE_KEY_POSTS = 'upcycling_posts';
+const STORAGE_KEY_POST_ID_COUNTER = 'upcycling_post_id_counter';
+
+function loadPostsFromStorage() {
+    try {
+        const storedPosts = localStorage.getItem(STORAGE_KEY_POSTS);
+        const storedCounter = localStorage.getItem(STORAGE_KEY_POST_ID_COUNTER);
+        
+        if (storedCounter) {
+            postIdCounter = parseInt(storedCounter);
+        }
+        
+        if (storedPosts) {
+            return JSON.parse(storedPosts);
+        }
+    } catch (e) {
+        console.error('加载 localStorage 数据失败:', e);
+    }
+    return null;
+}
+
+function savePostsToStorage() {
+    try {
+        localStorage.setItem(STORAGE_KEY_POSTS, JSON.stringify(posts));
+        localStorage.setItem(STORAGE_KEY_POST_ID_COUNTER, postIdCounter.toString());
+    } catch (e) {
+        console.error('保存到 localStorage 失败:', e);
+    }
+}
+
 const quickItems = [
     { id: 'chair', icon: '🪑', name: '旧椅子' },
     { id: 'table', icon: '🪵', name: '旧桌子' },
@@ -293,7 +323,7 @@ const materialsData = [
 
 let currentMaterialType = 'all';
 let cart = [];
-let posts = [...initialPosts];
+let posts = [];
 let postIdCounter = 5;
 let imageSlotCount = 1;
 let currentItem = null;
@@ -305,6 +335,13 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initApp() {
+    const storedPosts = loadPostsFromStorage();
+    if (storedPosts && storedPosts.length > 0) {
+        posts = storedPosts;
+    } else {
+        posts = [...initialPosts];
+        savePostsToStorage();
+    }
     initNavigation();
     initModalOverlay();
     initRecognitionModule();
@@ -909,6 +946,7 @@ function handleCreatePost() {
     };
     
     posts.unshift(newPost);
+    savePostsToStorage();
     renderPosts();
     
     closeModal('createPostModal');
@@ -987,6 +1025,7 @@ function handleLike(postId) {
     post.isLiked = !post.isLiked;
     post.likes += post.isLiked ? 1 : -1;
 
+    savePostsToStorage();
     renderPosts();
 }
 
@@ -1065,6 +1104,7 @@ function handleSubmitComment(postId) {
     post.commentList.push(newComment);
     post.comments++;
 
+    savePostsToStorage();
     renderPosts();
     showCommentsModal(postId);
     showToast('评论发表成功！', 'success');
