@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>旧物改造创意指南</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components/cards.css">
+    <link rel="stylesheet" href="css/components/modals.css">
+    <link rel="stylesheet" href="css/components/forms.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1 class="logo">旧物改造创意指南</h1>
+            <nav>
+                <button class="nav-btn active" data-section="recognition">
+                    <span class="nav-icon">🔍</span>
+                    <span>旧物识别</span>
+                </button>
+                <button class="nav-btn" data-section="tutorials">
+                    <span class="nav-icon">📚</span>
+                    <span>改造教程</span>
+                </button>
+                <button class="nav-btn" data-section="community">
+                    <span class="nav-icon">🏠</span>
+                    <span>成果分享</span>
+                </button>
+                <button class="nav-btn" data-section="materials">
+                    <span class="nav-icon">🛒</span>
+                    <span>材料推荐</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- 旧物识别模块 -->
+        <section id="recognition" class="section active">
+            <div class="section-header">
+                <h2>旧物类型识别</h2>
+                <p>拍摄或上传旧物图片，获取智能改造方向建议</p>
+            </div>
+            
+            <div class="recognition-container">
+                <div class="upload-area" id="uploadArea">
+                    <input type="file" id="imageInput" accept="image/*" capture="environment">
+                    <div class="upload-placeholder">
+                        <span class="upload-icon">📷</span>
+                        <p>点击上传或拍摄旧物</p>
+                        <p class="upload-hint">支持JPG、PNG格式，文件小于5MB</p>
+                    </div>
+                    <img id="previewImage" alt="预览图片" style="display: none;">
+                </div>
+
+                <div class="recognition-result" id="recognitionResult" style="display: none;">
+                    <div class="result-header">
+                        <h3>识别结果</h3>
+                        <span class="confidence">匹配度: <span id="confidenceValue">95%</span></span>
+                    </div>
+                    <div class="identified-item" id="identifiedItem">
+                        <div class="item-icon">🪑</div>
+                        <div class="item-info">
+                            <h4 id="itemName">木质旧椅子</h4>
+                            <p id="itemDescription">这是一把有年代感的实木椅子，结构稳固但外观陈旧</p>
+                        </div>
+                    </div>
+                    
+                    <h4 class="suggestion-title">推荐改造方向</h4>
+                    <div class="suggestions-grid" id="suggestionsGrid">
+                        <!-- 推荐方向将通过JS动态生成 -->
+                    </div>
+                </div>
+
+                <div class="quick-identify">
+                    <h4>快速识别（选择常见物品）</h4>
+                    <div class="quick-items" id="quickItems">
+                        <!-- 快速识别选项 -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 改造教程模块 -->
+        <section id="tutorials" class="section">
+            <div class="section-header">
+                <h2>简易改造教程</h2>
+                <p>无需专业工具，步骤清晰易懂</p>
+            </div>
+
+            <div class="tutorial-filters">
+                <button class="filter-btn active" data-category="all">全部</button>
+                <button class="filter-btn" data-category="furniture">家具改造</button>
+                <button class="filter-btn" data-category="clothes">服装改造</button>
+                <button class="filter-btn" data-category="container">容器改造</button>
+                <button class="filter-btn" data-category="electronic">电子配件</button>
+            </div>
+
+            <div class="tutorials-grid" id="tutorialsGrid">
+                <!-- 教程卡片将通过JS动态生成 -->
+            </div>
+        </section>
+
+        <!-- 教程详情模态框 -->
+        <div class="modal" id="tutorialModal">
+            <div class="modal-content tutorial-detail">
+                <button class="modal-close" onclick="closeModal('tutorialModal')">&times;</button>
+                <div id="tutorialDetail">
+                    <!-- 教程详情内容 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 改造成果分享模块 -->
+        <section id="community" class="section">
+            <div class="section-header">
+                <h2>改造成果分享</h2>
+                <p>分享你的创意，互相点评借鉴</p>
+                <button class="btn-primary" id="createPostBtn">
+                    <span>✨</span> 发布作品
+                </button>
+            </div>
+
+            <div class="community-feed" id="communityFeed">
+                <!-- 分享内容将通过JS动态生成 -->
+            </div>
+        </section>
+
+        <!-- 发布作品模态框 -->
+        <div class="modal" id="createPostModal">
+            <div class="modal-content">
+                <button class="modal-close" onclick="closeModal('createPostModal')">&times;</button>
+                <h3>发布改造作品</h3>
+                <form id="createPostForm">
+                    <div class="form-group">
+                        <label for="postTitle">作品标题</label>
+                        <input type="text" id="postTitle" placeholder="给你的改造作品起个名字" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>上传作品图片</label>
+                        <div class="image-upload-grid" id="imageUploadGrid">
+                            <div class="upload-slot" id="uploadSlot1">
+                                <input type="file" id="postImage1" accept="image/*" capture="environment">
+                                <span class="slot-placeholder">+</span>
+                            </div>
+                        </div>
+                        <button type="button" class="add-image-btn" id="addImageBtn">+ 添加更多图片</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="postDescription">改造说明</label>
+                        <textarea id="postDescription" rows="4" placeholder="分享你的改造过程、使用材料、心得体会..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>改造难度</label>
+                        <div class="difficulty-selector">
+                            <label class="difficulty-option">
+                                <input type="radio" name="difficulty" value="easy" checked>
+                                <span>简单</span>
+                            </label>
+                            <label class="difficulty-option">
+                                <input type="radio" name="difficulty" value="medium">
+                                <span>中等</span>
+                            </label>
+                            <label class="difficulty-option">
+                                <input type="radio" name="difficulty" value="hard">
+                                <span>困难</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="postMaterials">使用材料（用逗号分隔）</label>
+                        <input type="text" id="postMaterials" placeholder="例如：砂纸、油漆、布料、热熔胶">
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="closeModal('createPostModal')">取消</button>
+                        <button type="submit" class="btn-primary">发布作品</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 材料推荐模块 -->
+        <section id="materials" class="section">
+            <div class="section-header">
+                <h2>改造材料推荐</h2>
+                <p>根据你的旧物类型推荐适配的改造材料</p>
+            </div>
+
+            <div class="materials-filters">
+                <button class="material-filter active" data-type="all">全部材料</button>
+                <button class="material-filter" data-type="adhesive">粘合剂</button>
+                <button class="material-filter" data-type="paint">涂料颜料</button>
+                <button class="material-filter" data-type="fabric">布料织物</button>
+                <button class="material-filter" data-type="hardware">五金配件</button>
+                <button class="material-filter" data-type="tools">工具耗材</button>
+            </div>
+
+            <div class="materials-grid" id="materialsGrid">
+                <!-- 材料卡片将通过JS动态生成 -->
+            </div>
+
+            <!-- 购物车侧边栏 -->
+            <div class="cart-sidebar" id="cartSidebar">
+                <div class="cart-header">
+                    <h3>我的购物清单</h3>
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+                <div class="cart-items" id="cartItems">
+                    <div class="cart-empty">
+                        <span>🛒</span>
+                        <p>购物清单为空</p>
+                        <p class="cart-hint">点击材料卡片的"+"添加</p>
+                    </div>
+                </div>
+                <div class="cart-footer" id="cartFooter" style="display: none;">
+                    <div class="cart-total">
+                        <span>总计</span>
+                        <span class="total-price" id="cartTotal">¥0.00</span>
+                    </div>
+                    <button class="btn-primary btn-full" id="checkoutBtn">一键采购</button>
+                </div>
+            </div>
+
+            <!-- 购物车按钮 -->
+            <button class="cart-fab" id="cartFab">
+                <span>🛒</span>
+                <span class="cart-badge" id="cartBadge" style="display: none;">0</span>
+            </button>
+        </section>
+
+        <!-- 采购确认模态框 -->
+        <div class="modal" id="checkoutModal">
+            <div class="modal-content checkout-modal">
+                <button class="modal-close" onclick="closeModal('checkoutModal')">&times;</button>
+                <h3>确认采购清单</h3>
+                <div id="checkoutItems">
+                    <!-- 采购清单 -->
+                </div>
+                <div class="checkout-total">
+                    <span>总金额</span>
+                    <span class="total-price" id="checkoutTotal">¥0.00</span>
+                </div>
+                <p class="checkout-hint">* 这是演示功能，真实采购需要跳转至电商平台</p>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('checkoutModal')">取消</button>
+                    <button type="button" class="btn-primary" id="confirmCheckoutBtn">确认采购</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 旧物改造创意指南. 让每一件旧物焕发新生.</p>
+        </div>
+    </footer>
+
+    <script src="js/app.js" type="module"></script>
+</body>
+</html>
