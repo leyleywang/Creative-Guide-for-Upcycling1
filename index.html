@@ -44,14 +44,20 @@
             
             <div class="recognition-container">
                 <div class="upload-area" id="uploadArea">
-                    <input type="file" id="imageInput" accept="image/*" capture="environment">
-                    <div class="upload-placeholder">
+                    <div class="upload-placeholder" id="uploadPlaceholder">
                         <span class="upload-icon">📷</span>
                         <p>点击上传或拍摄旧物</p>
                         <p class="upload-hint">支持JPG、PNG格式，文件小于5MB</p>
                     </div>
                     <img id="previewImage" alt="预览图片" style="display: none;">
+                    <div class="loading-container" id="loadingContainer" style="display: none;">
+                        <div class="loading-spinner"></div>
+                        <p class="loading-text">正在识别中...</p>
+                    </div>
                 </div>
+                
+                <input type="file" id="imageInputUpload" accept="image/*" style="display: none;">
+                <input type="file" id="imageInputCamera" accept="image/*" capture="environment" style="display: none;">
 
                 <div class="recognition-result" id="recognitionResult" style="display: none;">
                     <div class="result-header">
@@ -80,6 +86,24 @@
                 </div>
             </div>
         </section>
+
+        <!-- 上传选项模态框 -->
+        <div class="modal" id="uploadOptionModal">
+            <div class="modal-content upload-option-modal">
+                <button class="modal-close" onclick="closeModal('uploadOptionModal')">&times;</button>
+                <h3>选择图片来源</h3>
+                <div class="upload-options">
+                    <button class="upload-option-btn" id="btnUploadGallery">
+                        <span class="upload-option-icon">🖼️</span>
+                        <span class="upload-option-text">从相册选择</span>
+                    </button>
+                    <button class="upload-option-btn" id="btnUploadCamera">
+                        <span class="upload-option-icon">📷</span>
+                        <span class="upload-option-text">拍摄照片</span>
+                    </button>
+                </div>
+            </div>
+        </div>
 
         <!-- 改造教程模块 -->
         <section id="tutorials" class="section">
@@ -260,6 +284,6 @@
         </div>
     </footer>
 
-    <script src="js/app.js" type="module"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
